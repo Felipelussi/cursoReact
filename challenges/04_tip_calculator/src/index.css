@@ -1,0 +1,76 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vh;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.main{
+
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ 
+
+}
+
+.inputs{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 50%;
+  padding: 1rem;
+  background-color: orange;
+  margin: 1px;
+  border-radius: 40px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.inputs input,
+.inputs select{
+  border-radius: 20px;
+  border: none;
+  padding: 1em;
+}
+
+h3{
+  background-color: rgb(21, 35, 133);
+  padding: 1rem;
+  width: 50%;
+  border-radius: 20px;
+  text-align: center;
+  color: white;
+}
+
+button{
+  padding: 1rem;
+  width: 10%;
+  border-radius: 20px;
+  text-align: center;
+  text-transform: capitalize;
+  text-decoration: none;
+  border: none;
+  background-color: orange; 
+  color: white; 
+  font-size: large;
+  font-weight: bold;
+}
+
+button:hover{
+  background-color: rgb(21, 35, 133);;
+}
