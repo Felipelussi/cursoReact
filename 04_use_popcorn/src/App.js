@@ -59,6 +59,16 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
+  const [selectedID, setSelectedID] = useState(null);
+
+  function handleSelectID(id) {
+    if (id === selectedID) setSelectedID(null);
+    else setSelectedID(id);
+  }
+
+  function closeMovie() {
+    setSelectedID(null);
+  }
 
   useEffect(
     function () {
@@ -106,12 +116,20 @@ export default function App() {
         <Box>
           {/* {isLoading ? <Loader /> : <MoviesList movies={movies} />} */}
           {isLoading && <Loader />}
-          {!isLoading && !error && <MoviesList movies={movies} />}
+          {!isLoading && !error && (
+            <MoviesList movies={movies} onSelectId={handleSelectID} />
+          )}
           {error && <ErrorMessage message={error} />}
         </Box>
         <Box>
-          <WatchedSummary watched={watched} />
-          <WatchedMovieList watched={watched} />
+          {selectedID ? (
+            <MovieDetails selectedID={selectedID} closeMovie={closeMovie} />
+          ) : (
+            <>
+              <WatchedSummary watched={watched} />
+              <WatchedMovieList watched={watched} />
+            </>
+          )}
         </Box>
       </Main>
     </>
@@ -184,19 +202,48 @@ function Box({ children }) {
   );
 }
 
-function MoviesList({ movies }) {
+function MovieDetails({ selectedID, closeMovie }) {
+  const [movieDetails, setMovieDetails] = useState({});
+
+  useEffect(
+    function () {
+      async function getMovieDetails() {
+        const res = await fetch(
+          `http://www.omdbapi.com/?i=${selectedID}&plot=full&apikey=${KEY}`
+        );
+
+        const data = await res.json();
+        console.log(data);
+        setMovieDetails(data);
+      }
+      getMovieDetails();
+    },
+    [selectedID]
+  );
   return (
-    <ul className="list">
+    <div>
+      <button className="btn-back" onClick={closeMovie}>
+        &larr;
+      </button>
+
+      <p>{movieDetails.Plot}</p>
+    </div>
+  );
+}
+
+function MoviesList({ movies, onSelectId }) {
+  return (
+    <ul className="list list-movies">
       {movies?.map((movie) => (
-        <Movie movie={movie} key={movie.imdbID} />
+        <Movie movie={movie} key={movie.imdbID} onSelectId={onSelectId} />
       ))}
     </ul>
   );
 }
 
-function Movie({ movie }) {
+function Movie({ movie, onSelectId }) {
   return (
-    <li key={movie.imdbID}>
+    <li key={movie.imdbID} onClick={() => onSelectId(movie.imdbID)}>
       <img src={movie.Poster} alt={`${movie.Title} poster`} />
       <h3>{movie.Title}</h3>
       <div>
