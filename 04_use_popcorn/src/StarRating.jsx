@@ -8,8 +8,8 @@ const containerStyle = {
 
 export default function StarRating({
   maxRating = 5,
-  color = "#f32311",
-  size = "48",
+  color = "#afe3",
+  size = "48px",
   messages = [],
   className = "",
   defaultRating = 0,
@@ -19,10 +19,12 @@ export default function StarRating({
   const [hovering, setHovering] = useState(false);
 
   const textStyle = {
-    lineHeight: "1",
+    lineHeight: "100%",
+    fontWeight: "bolder",
     color: color,
-    fontSize: `${size / 1.5}px`,
-    margin: "0",
+    fontSize: `${Number(size.substring(0, size.length - 2)) / 1.2}px`,
+    marginLeft: "5px",
+    height: size,
   };
 
   const starContainerStyle = {

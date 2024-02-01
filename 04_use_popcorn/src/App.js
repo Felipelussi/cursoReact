@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useState } from "react";
+import StarRating from "./StarRating.jsx";
 
 const tempMovieData = [
   {
@@ -204,29 +205,65 @@ function Box({ children }) {
 
 function MovieDetails({ selectedID, closeMovie }) {
   const [movieDetails, setMovieDetails] = useState({});
-
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(
     function () {
       async function getMovieDetails() {
+        setIsLoading(true);
         const res = await fetch(
-          `http://www.omdbapi.com/?i=${selectedID}&plot=full&apikey=${KEY}`
+          `http://www.omdbapi.com/?i=${selectedID}&apikey=${KEY}`
         );
 
         const data = await res.json();
         console.log(data);
         setMovieDetails(data);
+        setIsLoading(false);
       }
       getMovieDetails();
     },
     [selectedID]
   );
   return (
-    <div>
-      <button className="btn-back" onClick={closeMovie}>
-        &larr;
-      </button>
-
-      <p>{movieDetails.Plot}</p>
+    <div className="details">
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <>
+          <header>
+            <button className="btn-back" onClick={closeMovie}>
+              &larr;
+            </button>
+            <img
+              src={movieDetails.Poster}
+              alt={`Poster of ${movieDetails.movie}`}
+            />
+            <div className="details-overview">
+              <h2>{movieDetails.Title}</h2>
+              <p>
+                {movieDetails.Released} &bull; {movieDetails.Runtime}
+              </p>
+              <p>{movieDetails.Genre}</p>
+              <p>
+                <span>⭐</span>
+                {movieDetails.imdbRating} IMDB rating
+              </p>
+            </div>
+          </header>
+          <section>
+            <StarRating
+              maxRating={10}
+              size="22px"
+              color="yellow"
+              defaultRating={Math.ceil(Number(movieDetails.imdbRating))}
+            />
+            <p>
+              <em>{movieDetails.Plot}</em>
+            </p>
+            <p>Starring {movieDetails.Actors}</p>
+            <p>Directed by {movieDetails.Director} </p>
+          </section>
+        </>
+      )}
     </div>
   );
 }
