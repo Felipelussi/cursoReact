@@ -36,7 +36,7 @@ export default function App() {
   const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [query, setQuery] = useState("inception");
+  const [query, setQuery] = useState("");
   const [selectedID, setSelectedID] = useState(null);
 
   function handleSelectID(id) {
@@ -93,6 +93,7 @@ export default function App() {
         setMovies([]);
         return;
       }
+      closeMovie();
       fetchMovies();
 
       return function () {
@@ -259,6 +260,22 @@ function MovieDetails({ selectedID, closeMovie, onAddMovie, watched }) {
       };
     },
     [movieDetails]
+  );
+
+  useEffect(
+    function () {
+      function callback(e) {
+        if (e.code === "Escape") {
+          closeMovie();
+        }
+      }
+      document.addEventListener("keydown", callback);
+
+      return function () {
+        document.removeEventListener("keydown", callback);
+      };
+    },
+    [closeMovie]
   );
 
   return (
