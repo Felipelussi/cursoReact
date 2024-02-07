@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useState } from "react";
 import StarRating from "./StarRating.jsx";
+import { useMovies } from "./useMovies.js";
 
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
@@ -8,11 +9,10 @@ const average = (arr) =>
 const KEY = "43f934f6";
 
 export default function App() {
-  const [movies, setMovies] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [selectedID, setSelectedID] = useState(null);
+
+  const { movies, isLoading, error } = useMovies(query, closeMovie);
 
   const [watched, setWatched] = useState(function () {
     const storedValue = JSON.parse(localStorage.getItem("watched"));
@@ -45,51 +45,6 @@ export default function App() {
       localStorage.setItem("watched", JSON.stringify(watched));
     },
     [watched]
-  );
-
-  useEffect(
-    function () {
-      const controller = new AbortController();
-
-      async function fetchMovies() {
-        setError("");
-        try {
-          setIsLoading(true);
-          const res = await fetch(
-            `http://www.omdbapi.com/?S=${query}&apikey=${KEY}`,
-            { signal: controller.signal }
-          );
-
-          if (!res.ok)
-            throw new Error("Something went wrong with fetching movies");
-
-          const data = await res.json();
-
-          if (data.Response === "False") throw new Error("Movie not found");
-
-          setMovies(data.Search);
-        } catch (err) {
-          if (err.name !== "AbortError") {
-            setError(err.message);
-            setMovies([]);
-          }
-        } finally {
-          setIsLoading(false);
-        }
-      }
-      if (query.length < 3) {
-        setError("");
-        setMovies([]);
-        return;
-      }
-      closeMovie();
-      fetchMovies();
-
-      return function () {
-        controller.abort();
-      };
-    },
-    [query]
   );
 
   return (
